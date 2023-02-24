@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { addContact } from '../../../redux/contacts/contacts-slice';
@@ -12,18 +12,14 @@ import styles from './contactForm.module.css';
 const ContactForm = () => {
   const dispatch = useDispatch();
   const allContacts = useSelector(getAllContacts);
-  
-  const [form, setForm] = useState({
-    name: '',
-    number: '',
-  });
+    
+  const [state, setState] = useState({ name: '', number: '' });
 
   const handleChangeForm = ({ target }) => {
     const { name, value } = target;
-    setForm(prevForm => ({ ...prevForm, [name]: value }));
+    setState(prevState => ({ ...prevState, [name]: value }));
   };
-  const { name, number } = form;
-
+  
   const isDublicate = name => {
     const normalizedName = name.toLowerCase();
     const result = allContacts.find(({ name }) => {
@@ -35,21 +31,30 @@ const ContactForm = () => {
 
   const handleAddContact = ({ name, number }) => {
     if (isDublicate(name)) {
-        alert(`${name} is already ixist`);
+        alert(`${name} is already in contacts`);
         return false;
     }
 
     dispatch(addContact({ name, number }));
 }
 
-  useEffect(() => {
-    if (allContacts) {
-      localStorage.setItem('contacts', JSON.stringify(allContacts));
-    }
-  }, [allContacts]);
+const handleSubmit = e => {
+  e.preventDefault();
+
+  const newContact = {
+    id: nanoid(),
+    name: name,
+    number: number,
+  };
+  setState({ name: '', number: '' });
+  dispatch(handleAddContact(newContact));
+    
+};
+
+const { name, number } = state;
 
   return (
-    <form className={styles.formWrapper} onSubmit={handleAddContact}>
+    <form className={styles.formWrapper} onSubmit={handleSubmit}>
       <label className={styles.inputTitle} htmlFor="nameId">
         Name
       </label>
