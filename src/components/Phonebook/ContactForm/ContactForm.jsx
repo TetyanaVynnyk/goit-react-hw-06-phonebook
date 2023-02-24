@@ -40,16 +40,8 @@ const ContactForm = () => {
 
 const handleSubmit = e => {
   e.preventDefault();
-
-  const newContact = {
-    
-    id: nanoid(),
-    name: name,
-    number: number,
-  };
   setState({ name: '', number: '' });
-  dispatch(handleAddContact(newContact));
-    
+  dispatch(handleAddContact(({...state})));
 };
 
 const { name, number } = state;
