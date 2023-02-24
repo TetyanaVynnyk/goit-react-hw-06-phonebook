@@ -42,6 +42,7 @@ const handleSubmit = e => {
   e.preventDefault();
 
   const newContact = {
+    
     id: nanoid(),
     name: name,
     number: number,
