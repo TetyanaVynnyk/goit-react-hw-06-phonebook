@@ -1,30 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { addContact } from '../../../redux/contacts/contacts-slice';
+
+import { getAllContacts} from '../../../redux/contacts/contacts-selectors';
 
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
 
 import styles from './contactForm.module.css';
 
-const ContactForm = ({ onSubmit }) => {
-  const [state, setState] = useState({ name: '', number: '' });
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const allContacts = useSelector(getAllContacts);
+  
+  const [form, setForm] = useState({
+    name: '',
+    number: '',
+  });
 
-  const handleChange = ({ target }) => {
+  const handleChangeForm = ({ target }) => {
     const { name, value } = target;
-    setState(prevState => {
-      return { ...prevState, [name]: value };
+    setForm(prevForm => ({ ...prevForm, [name]: value }));
+  };
+  const { name, number } = form;
+
+  const isDublicate = name => {
+    const normalizedName = name.toLowerCase();
+    const result = allContacts.find(({ name }) => {
+      return name.toLowerCase() === normalizedName;
     });
+
+    return Boolean(result);
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    onSubmit(({...state}));
-    setState({ name: '', number: '' });
-  };
+  const handleAddContact = ({ name, number }) => {
+    if (isDublicate(name)) {
+        alert(`${name} is already ixist`);
+        return false;
+    }
 
-  const { name, number } = state;
+    dispatch(addContact({ name, number }));
+}
+
+  useEffect(() => {
+    if (allContacts) {
+      localStorage.setItem('contacts', JSON.stringify(allContacts));
+    }
+  }, [allContacts]);
 
   return (
-    <form className={styles.formWrapper} onSubmit={handleSubmit}>
+    <form className={styles.formWrapper} onSubmit={handleAddContact}>
       <label className={styles.inputTitle} htmlFor="nameId">
         Name
       </label>
@@ -37,7 +62,7 @@ const ContactForm = ({ onSubmit }) => {
         title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
         required
         value={name}
-        onChange={handleChange}
+        onChange={handleChangeForm}
       />
       <label className={styles.inputTitle} htmlFor="phoneId">
         Number
@@ -51,7 +76,7 @@ const ContactForm = ({ onSubmit }) => {
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
         value={number}
-        onChange={handleChange}
+        onChange={handleChangeForm}
       />
       <button className={styles.btn} type="submit">
         Add contacts
@@ -61,7 +86,3 @@ const ContactForm = ({ onSubmit }) => {
 };
 
 export default ContactForm;
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};

@@ -1,10 +1,22 @@
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { nanoid } from 'nanoid';
 
 import styles from './filter.module.css';
 
-const Filter = ({ value, changeFilter }) => {
+import {setFilter} from "../../../redux/filter/filter-slice";
+
+import {getFilter} from "../../../redux/filter/filter-selectors";
+
+const Filter = () => {
+  const filter = useSelector(getFilter);
+
+  const dispatch = useDispatch();
+
+    const handleFilter = ({ target }) => {
+    dispatch(setFilter(target.value))
+  };
+
   return (
     <div className={styles.filterWrapper}>
       <label className={styles.filterLabel} htmlFor="inputid">
@@ -14,8 +26,8 @@ const Filter = ({ value, changeFilter }) => {
           type="text"
           inputid={nanoid()}
           required
-          value={value}
-          onChange={changeFilter}
+          value={filter}
+          onChange={handleFilter}
         />
       </label>
     </div>
@@ -23,8 +35,3 @@ const Filter = ({ value, changeFilter }) => {
 };
 
 export default Filter;
-
-Filter.propTypes = {
-  changeFilter: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
-};
