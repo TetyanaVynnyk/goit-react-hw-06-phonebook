@@ -40,8 +40,8 @@ const ContactForm = () => {
 
 const handleSubmit = e => {
   e.preventDefault();
+  handleAddContact({...state});
   setState({ name: '', number: '' });
-  dispatch(handleAddContact(({...state})));
 };
 
 const { name, number } = state;
