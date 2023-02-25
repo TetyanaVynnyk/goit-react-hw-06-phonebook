@@ -15,7 +15,7 @@ const Filter = () => {
 
     const handleFilter = ({ target }) => {
     dispatch(setFilter(target.value))
-  };
+ };
 
   return (
     <div className={styles.filterWrapper}>
@@ -25,6 +25,7 @@ const Filter = () => {
           className={styles.filterInput}
           type="text"
           inputid={nanoid()}
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           required
           value={filter}
           onChange={handleFilter}
