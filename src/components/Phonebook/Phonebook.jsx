@@ -23,7 +23,7 @@ const Phonebook = () => {
           <ContactList />
         </div>
       ) : (
-        <p>You have no contacts</p>
+        <><Filter /><p>You have no contacts</p></>
       )}
     </div>
   );
